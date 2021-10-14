@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/activity_main.xml" value="0.10144927536231885" />
+        <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/activity_main.xml" value="0.12" />
+        <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/export_button.xml" value="0.1796875" />
+        <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/import_button.xml" value="0.1796875" />
+        <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/randomize.xml" value="0.1796875" />
       </map>
     </option>
   </component>
