@@ -62,6 +62,43 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 2 && data != null) {
+            try {
+                readExcelData(data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void readExcelData(Uri excelFile) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(excelFile);
+        Log.v("debug", inputStream.toString());
+        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+
+        ArrayList<String> cells = new ArrayList<>();
+        for (Row row : sheet) {
+            Iterator<Cell> cellIterator = row.cellIterator();
+            while (cellIterator.hasNext()) {
+                Cell cell = cellIterator.next();
+                cells.add(cell.getStringCellValue());
+            }
+        }
+
+        listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
+        container.removeAllViews();
+        layoutInflater.inflate(R.layout.randomize, container);
+        EditText editText = findViewById(R.id.count);
+        editText.setHint("Count: (1 - " + cells.size() + ")");
+        Button randomizeButton = findViewById(R.id.randomize);
+        randomizeButton.setOnClickListener(v -> {
+            int count = Integer.parseInt(editText.getText().toString());
+            if (count < 1 || count > cells.size())
+                Toast.makeText(this, "Count isn't in range", Toast.LENGTH_SHORT).show();
+            else
+                randomize(cells, count);
+        });
     }
 
 
