@@ -101,5 +101,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void randomize(ArrayList<String> cells, int count) {
+        ArrayList<String> randomized = new ArrayList<>();
+        for(int i = 0; i < count; i++) {
+            Random rand = new Random();
+            int index = rand.nextInt(cells.size());
+            randomized.add(cells.get(index));
+            cells.remove(index);
+        }
 
+        listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, randomized));
+        container.removeAllViews();
+        layoutInflater.inflate(R.layout.button, container);
+        Button button = findViewById(R.id.button);
+        button.setText("Export to PDF");
+        button.setOnClickListener(v -> {
+            exportToPDF(randomized);
+        });
+    }
+
+    private void exportToPDF(ArrayList<String> randomized) {
+
+    }
 }
