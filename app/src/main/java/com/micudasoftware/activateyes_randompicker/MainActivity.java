@@ -11,11 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -59,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -89,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
         container.removeAllViews();
         layoutInflater.inflate(R.layout.randomize, container);
+        TextView textView = findViewById(R.id.textView);
+        textView.setVisibility(View.INVISIBLE);
         EditText editText = findViewById(R.id.count);
         editText.setHint("Count: (1 - " + cells.size() + ")");
         Button randomizeButton = findViewById(R.id.randomize);
