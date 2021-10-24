@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater layoutInflater;
     ListView listView;
     ViewGroup container;
-    int state = 0;
+    int state;
     ArrayList<String> cells;
     ArrayList<String> randomized;
 
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        state = 0;
         layoutInflater = getLayoutInflater();
         listView = findViewById(R.id.list_view);
         listView.setAdapter(null);
@@ -93,33 +94,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         switch (state) {
             case 0:
                 super.onBackPressed();
                 break;
             case 1:
-                state = 0;
                 init();
                 break;
             case 2:
-                state = 1;
-                listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
-                container.removeAllViews();
-                layoutInflater.inflate(R.layout.randomize, container);
-                TextView textView = findViewById(R.id.textView);
-                textView.setVisibility(View.INVISIBLE);
-                EditText editText = findViewById(R.id.count);
-                editText.setHint("Count: (1 - " + cells.size() + ")");
-                Button randomizeButton = findViewById(R.id.randomize);
-                randomizeButton.setOnClickListener(v -> {
-                    int count = Integer.parseInt(editText.getText().toString());
-                    if (count < 1 || count > cells.size())
-                        Toast.makeText(this, "Count isn't in range", Toast.LENGTH_SHORT).show();
-                    else
-                        randomize(count);
-                });
-
+                setView();
         }
     }
 
@@ -167,7 +150,10 @@ public class MainActivity extends AppCompatActivity {
                 cells.add(cell.getStringCellValue());
             }
         }
+        setView();
+    }
 
+    private void setView() {
         state = 1;
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
         container.removeAllViews();
