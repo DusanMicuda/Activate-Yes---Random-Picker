@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater layoutInflater;
     ListView listView;
     ViewGroup container;
-    View footerView;
     TextView textView;
     int state;
     ArrayList<String> cells;
@@ -69,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f10d19")));
-        footerView = new View(this);
-        footerView.setMinimumHeight(400);
         layoutInflater = getLayoutInflater();
         listView = findViewById(R.id.list_view);
         container = (ViewGroup) findViewById(R.id.container);
@@ -80,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         state = 0;
-        listView.removeFooterView(footerView);
+        listView.setAdapter(null);
         textView.setVisibility(View.VISIBLE);
         container.removeAllViews();
         layoutInflater.inflate(R.layout.button, container);
@@ -163,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
     private void setView() {
         state = 1;
         listView.setAdapter(new ArrayAdapter<>(this, R.layout.list_item, cells));
-        listView.addFooterView(footerView);
         container.removeAllViews();
         layoutInflater.inflate(R.layout.randomize, container);
         textView.setVisibility(View.INVISIBLE);
