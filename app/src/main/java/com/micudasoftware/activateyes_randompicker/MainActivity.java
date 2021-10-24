@@ -16,6 +16,8 @@ import android.graphics.Color;
 import android.graphics.DrawFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater layoutInflater;
     ListView listView;
     ViewGroup container;
+    View footerView;
+    TextView textView;
     int state;
     ArrayList<String> cells;
     ArrayList<String> randomized;
@@ -64,32 +68,39 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f10d19")));
+        footerView = new View(this);
+        footerView.setMinimumHeight(400);
+        layoutInflater = getLayoutInflater();
+        listView = findViewById(R.id.list_view);
+        container = (ViewGroup) findViewById(R.id.container);
+        textView = findViewById(R.id.textView);
         init();
     }
 
     private void init() {
         state = 0;
-        layoutInflater = getLayoutInflater();
-        listView = findViewById(R.id.list_view);
-        listView.setAdapter(null);
-        TextView textView = findViewById(R.id.textView);
+        listView.removeFooterView(footerView);
         textView.setVisibility(View.VISIBLE);
-        container = (ViewGroup) findViewById(R.id.container);
         container.removeAllViews();
         layoutInflater.inflate(R.layout.button, container);
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                startActivityForResult(intent, 2);
+                openDocument();
             } else
                 ActivityCompat.requestPermissions(this,
                         new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
                         1);
         });
+    }
+
+    private void openDocument() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        startActivityForResult(intent, 2);
     }
 
     @Override
@@ -112,10 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                startActivityForResult(intent, 2);
+                openDocument();
             } else {
                 Toast.makeText(this, "Access Denied!", Toast.LENGTH_SHORT).show();
             }
@@ -128,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 2 && data != null) {
             try {
-                Uri uri = data.getData();
-                readExcelData(uri);
+                readExcelData(data.getData());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -155,10 +162,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setView() {
         state = 1;
-        listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
+        listView.setAdapter(new ArrayAdapter<>(this, R.layout.list_item, cells));
+        listView.addFooterView(footerView);
         container.removeAllViews();
         layoutInflater.inflate(R.layout.randomize, container);
-        TextView textView = findViewById(R.id.textView);
         textView.setVisibility(View.INVISIBLE);
         EditText editText = findViewById(R.id.count);
         editText.setHint("Count: (1 - " + cells.size() + ")");
@@ -183,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         state = 2;
-        listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, randomized));
+        listView.setAdapter(new ArrayAdapter<>(this, R.layout.list_item, randomized));
         container.removeAllViews();
         layoutInflater.inflate(R.layout.button, container);
         Button button = findViewById(R.id.button);

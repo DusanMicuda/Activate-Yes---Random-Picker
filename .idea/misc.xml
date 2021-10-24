@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/dusan/AppData/Local/Android/Sdk/platforms/android-30/data/res/layout/simple_list_item_1.xml" value="0.17889492753623187" />
         <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/drawable/curved_corners.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/activity_main.xml" value="0.12" />
         <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/button.xml" value="0.1796875" />
         <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/export_button.xml" value="0.1796875" />
         <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/import_button.xml" value="0.1796875" />
+        <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/list_item.xml" value="0.17889492753623187" />
         <entry key="..\:/Users/dusan/OneDrive/Work/Android/ActivateYesRandomPicker/app/src/main/res/layout/randomize.xml" value="0.1796875" />
       </map>
     </option>
