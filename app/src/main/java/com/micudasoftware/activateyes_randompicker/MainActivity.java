@@ -31,6 +31,8 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -73,6 +75,23 @@ public class MainActivity extends AppCompatActivity {
         container = (ViewGroup) findViewById(R.id.container);
         textView = findViewById(R.id.textView);
         init();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about_us:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.activateyes.net/about"));
+                startActivity(browserIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {
