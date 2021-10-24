@@ -56,16 +56,25 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater layoutInflater;
     ListView listView;
     ViewGroup container;
-    Uri uri;
+    int state = 0;
+    ArrayList<String> cells;
+    ArrayList<String> randomized;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
+    }
 
+    private void init() {
         layoutInflater = getLayoutInflater();
         listView = findViewById(R.id.list_view);
+        listView.setAdapter(null);
+        TextView textView = findViewById(R.id.textView);
+        textView.setVisibility(View.VISIBLE);
         container = (ViewGroup) findViewById(R.id.container);
+        container.removeAllViews();
         layoutInflater.inflate(R.layout.button, container);
         Button button = findViewById(R.id.button);
         button.setOnClickListener(v -> {
@@ -77,15 +86,41 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 2);
             } else
                 ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-                    1);
+                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                        1);
         });
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
 
+        switch (state) {
+            case 0:
+                super.onBackPressed();
+                break;
+            case 1:
+                state = 0;
+                init();
+                break;
+            case 2:
+                state = 1;
+                listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
+                container.removeAllViews();
+                layoutInflater.inflate(R.layout.randomize, container);
+                TextView textView = findViewById(R.id.textView);
+                textView.setVisibility(View.INVISIBLE);
+                EditText editText = findViewById(R.id.count);
+                editText.setHint("Count: (1 - " + cells.size() + ")");
+                Button randomizeButton = findViewById(R.id.randomize);
+                randomizeButton.setOnClickListener(v -> {
+                    int count = Integer.parseInt(editText.getText().toString());
+                    if (count < 1 || count > cells.size())
+                        Toast.makeText(this, "Count isn't in range", Toast.LENGTH_SHORT).show();
+                    else
+                        randomize(count);
+                });
+
+        }
     }
 
     @Override
@@ -110,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 2 && data != null) {
             try {
-                uri = data.getData();
+                Uri uri = data.getData();
                 readExcelData(uri);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -120,11 +155,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void readExcelData(Uri excelFile) throws IOException {
         InputStream inputStream = getContentResolver().openInputStream(excelFile);
+        cells = new ArrayList<>();
         Log.v("debug", excelFile.toString());
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
         XSSFSheet sheet = workbook.getSheetAt(0);
 
-        ArrayList<String> cells = new ArrayList<>();
         for (Row row : sheet) {
             Iterator<Cell> cellIterator = row.cellIterator();
             while (cellIterator.hasNext()) {
@@ -133,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        state = 1;
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cells));
         container.removeAllViews();
         layoutInflater.inflate(R.layout.randomize, container);
@@ -146,12 +182,13 @@ public class MainActivity extends AppCompatActivity {
             if (count < 1 || count > cells.size())
                 Toast.makeText(this, "Count isn't in range", Toast.LENGTH_SHORT).show();
             else
-                randomize(cells, count);
+                randomize(count);
         });
     }
 
-    private void randomize(ArrayList<String> cells, int count) {
-        ArrayList<String> randomized = new ArrayList<>();
+    private void randomize(int count) {
+        ArrayList<String> cells = new ArrayList<>(this.cells);
+        randomized = new ArrayList<>();
         for(int i = 0; i < count; i++) {
             Random rand = new Random();
             int index = rand.nextInt(cells.size());
@@ -159,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             cells.remove(index);
         }
 
+        state = 2;
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, randomized));
         container.removeAllViews();
         layoutInflater.inflate(R.layout.button, container);
