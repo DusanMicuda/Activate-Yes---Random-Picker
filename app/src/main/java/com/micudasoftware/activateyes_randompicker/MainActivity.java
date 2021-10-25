@@ -148,13 +148,13 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == 1)
                 openDocument();
-            } else {
-                Toast.makeText(this, "Access Denied!", Toast.LENGTH_SHORT).show();
-            }
-        }
+            else if (requestCode == 2)
+                exportToPDF(randomized);
+        } else
+            Toast.makeText(this, "Access Denied!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -228,7 +228,13 @@ public class MainActivity extends AppCompatActivity {
         Button button = findViewById(R.id.button);
         button.setText("Export to PDF");
         button.setOnClickListener(v -> {
-            exportToPDF(randomized);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                exportToPDF(randomized);
+            } else
+                ActivityCompat.requestPermissions(this,
+                        new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        2);
         });
     }
 
