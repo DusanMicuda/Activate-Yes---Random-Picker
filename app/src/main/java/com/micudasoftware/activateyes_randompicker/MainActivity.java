@@ -4,9 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +27,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
@@ -53,6 +61,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -74,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.list_view);
         container = (ViewGroup) findViewById(R.id.container);
         textView = findViewById(R.id.textView);
+        createNotificationChannel();
         init();
     }
 
@@ -189,8 +199,9 @@ public class MainActivity extends AppCompatActivity {
             int count = Integer.parseInt(editText.getText().toString());
             if (count < 1 || count > cells.size())
                 Toast.makeText(this, "Count isn't in range", Toast.LENGTH_SHORT).show();
-            else
+            else {
                 randomize(count);
+            }
         });
     }
 
@@ -273,16 +284,41 @@ public class MainActivity extends AppCompatActivity {
         try {
             uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues);
             ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
-
             pdfDocument.writeTo(new FileOutputStream(pfd.getFileDescriptor()));
-
             pfd.close();
-            Toast.makeText(MainActivity.this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
 
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentTitle("PDF file generated successfully")
+                    .setContentText("Tap to open")
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(1, builder.build());
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         pdfDocument.close();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Activate Yes";
+            String description = "Random Picker Created PDF";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("1", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
