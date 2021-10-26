@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setSmallIcon(R.drawable.logo)
                     .setContentTitle("PDF file generated successfully")
                     .setContentText("Tap to open")
                     .setDefaults(Notification.DEFAULT_ALL)
