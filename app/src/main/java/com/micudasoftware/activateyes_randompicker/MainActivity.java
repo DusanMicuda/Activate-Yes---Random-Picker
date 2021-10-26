@@ -60,7 +60,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Random;
@@ -282,14 +284,17 @@ public class MainActivity extends AppCompatActivity {
 
         pdfDocument.finishPage(myPage);
 
-        String displayName = "ActiveYes.pdf";
+        String displayName = "ActivateYes-" + System.currentTimeMillis() + ".pdf";
         String mimeType = "application/pdf";
-        String relativeLocation = Environment.DIRECTORY_DOCUMENTS;
 
         final ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
-        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, relativeLocation);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS);
+        else
+            contentValues.put(MediaStore.MediaColumns.DATA,
+                    Environment.getExternalStorageDirectory() + "/" + displayName);
         final ContentResolver resolver = getContentResolver();
         Uri uri;
 
