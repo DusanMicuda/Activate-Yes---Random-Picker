@@ -2,6 +2,7 @@ package com.micudasoftware.activateyes_randompicker;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -15,6 +16,9 @@ public class SplashScreen extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
+
+        this.getWindow().setStatusBarColor(Color.parseColor("#FFF5A0"));
+
         Handler handler = new Handler();
         handler.postDelayed(runnable, 3000);
     }
