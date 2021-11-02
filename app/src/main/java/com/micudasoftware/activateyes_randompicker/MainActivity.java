@@ -1,71 +1,59 @@
 package com.micudasoftware.activateyes_randompicker;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DrawFilter;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.text.DynamicLayout;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Random;
+        import androidx.annotation.Nullable;
+        import androidx.appcompat.app.AppCompatActivity;
+        import androidx.core.app.ActivityCompat;
+        import androidx.core.app.NotificationCompat;
+        import androidx.core.app.NotificationManagerCompat;
+        import androidx.core.content.ContextCompat;
+        import android.Manifest;
+        import android.app.Notification;
+        import android.app.NotificationChannel;
+        import android.app.NotificationManager;
+        import android.app.PendingIntent;
+        import android.content.ContentResolver;
+        import android.content.ContentValues;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.pm.PackageManager;
+        import android.graphics.Canvas;
+        import android.graphics.Color;
+        import android.graphics.drawable.ColorDrawable;
+        import android.graphics.pdf.PdfDocument;
+        import android.net.Uri;
+        import android.os.Build;
+        import android.os.Bundle;
+        import android.os.Environment;
+        import android.os.ParcelFileDescriptor;
+        import android.provider.MediaStore;
+        import android.text.Layout;
+        import android.text.StaticLayout;
+        import android.text.TextPaint;
+        import android.view.LayoutInflater;
+        import android.view.Menu;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.inputmethod.InputMethodManager;
+        import android.widget.ArrayAdapter;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.ListView;
+        import android.widget.TextView;
+        import android.widget.Toast;
+        import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+        import org.apache.poi.ss.usermodel.Cell;
+        import org.apache.poi.ss.usermodel.Row;
+        import org.apache.poi.ss.usermodel.Sheet;
+        import org.apache.poi.ss.usermodel.Workbook;
+        import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+        import java.io.FileOutputStream;
+        import java.io.IOException;
+        import java.io.InputStream;
+        import java.util.ArrayList;
+        import java.util.Iterator;
+        import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     int state;
     ArrayList<String> cells;
     ArrayList<String> randomized;
+    final String xls = "application/vnd.ms-excel";
+    final String xlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
     private void openDocument() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        intent.setType("*/*");
+        String[] mimetypes = {xlsx, xls};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         startActivityForResult(intent, 2);
     }
 
@@ -173,12 +165,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readExcelData(Uri excelFile) throws IOException {
-        InputStream inputStream = getContentResolver().openInputStream(excelFile);
         cells = new ArrayList<>();
-        Log.v("debug", excelFile.toString());
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-        XSSFSheet sheet = workbook.getSheetAt(0);
+        InputStream inputStream = getContentResolver().openInputStream(excelFile);
+        Workbook workbook = null;
+        String mimeType = getContentResolver().getType(excelFile);
+        if (mimeType.equals(xls))
+            workbook = new HSSFWorkbook(inputStream);
+        else if (mimeType.equals(xlsx))
+            workbook = new XSSFWorkbook(inputStream);
 
+        Sheet sheet = workbook.getSheetAt(0);
         for (Row row : sheet) {
             Iterator<Cell> cellIterator = row.cellIterator();
             while (cellIterator.hasNext()) {
@@ -196,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         layoutInflater.inflate(R.layout.randomize, container);
         textView.setVisibility(View.INVISIBLE);
         EditText editText = findViewById(R.id.count);
-        editText.setHint("Count: (1 - " + cells.size() + ")");
+        editText.setHint("Count: (1 - " + (cells.size()) + ")");
         Button randomizeButton = findViewById(R.id.randomize);
         randomizeButton.setOnClickListener(v -> {
             int count = Integer.parseInt(editText.getText().toString());
@@ -285,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
         pdfDocument.finishPage(myPage);
 
         String displayName = "ActivateYes-" + System.currentTimeMillis() + ".pdf";
-        String mimeType = "application/pdf";
 
         final ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
