@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ActivateYesRandomPicker" parent="Theme.MaterialComponents.DayNight">
+    <style name="Theme.ActivateYesRandomPicker" parent="Theme.MaterialComponents.Light">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#f10d19</item>
-        <item name="colorPrimaryVariant">#c40a14</item>
+        <item name="colorPrimary">#5dc0f7</item>
+        <item name="colorPrimaryVariant">#3da0d7</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

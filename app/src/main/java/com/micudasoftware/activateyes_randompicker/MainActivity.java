@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#f10d19")));
         layoutInflater = getLayoutInflater();
         listView = findViewById(R.id.list_view);
         container = (ViewGroup) findViewById(R.id.container);
@@ -304,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
-                    .setSmallIcon(R.drawable.logo)
+                    .setSmallIcon(R.drawable.statusbar_icon)
                     .setContentTitle("PDF file generated successfully")
                     .setContentText("Tap to open")
                     .setDefaults(Notification.DEFAULT_ALL)
