@@ -19,7 +19,8 @@ import androidx.annotation.NonNull;
         import android.content.pm.PackageManager;
         import android.graphics.Canvas;
         import android.graphics.Color;
-        import android.graphics.drawable.ColorDrawable;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
         import android.graphics.pdf.PdfDocument;
         import android.net.Uri;
         import android.os.Build;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     ViewGroup container;
     TextView textView;
+    TextView header;
     int state;
     ArrayList<String> cells;
     ArrayList<String> randomized;
@@ -73,8 +75,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         layoutInflater = getLayoutInflater();
         listView = findViewById(R.id.list_view);
-        container = (ViewGroup) findViewById(R.id.container);
+        container = findViewById(R.id.container);
         textView = findViewById(R.id.textView);
+        header = findViewById(R.id.header);
         createNotificationChannel();
         init();
     }
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         state = 0;
         listView.setAdapter(null);
         textView.setVisibility(View.VISIBLE);
+        header.setVisibility(View.GONE);
         container.removeAllViews();
         layoutInflater.inflate(R.layout.button, container);
         Button button = findViewById(R.id.button);
@@ -175,6 +179,11 @@ public class MainActivity extends AppCompatActivity {
 
         Sheet sheet = workbook.getSheetAt(0);
         for (Row row : sheet) {
+            if (row.getRowNum() == 0 && row.cellIterator().hasNext()) {
+                header.setText(row.cellIterator().next().getStringCellValue());
+                header.setVisibility(View.VISIBLE);
+                continue;
+            }
             Iterator<Cell> cellIterator = row.cellIterator();
             while (cellIterator.hasNext()) {
                 Cell cell = cellIterator.next();
@@ -239,9 +248,12 @@ public class MainActivity extends AppCompatActivity {
 
         PdfDocument pdfDocument = new PdfDocument();
 
-//        Paint paint = new Paint();
         TextPaint textPaint = new TextPaint(Color.BLACK);
         textPaint.setTextSize(14);
+
+        TextPaint headerPaint = new TextPaint(Color.BLACK);
+        headerPaint.setTextSize(16);
+        headerPaint.setTypeface(Typeface.DEFAULT_BOLD);
 
         int pageHeight = 842;
         int pageWidth = 595;
@@ -252,9 +264,17 @@ public class MainActivity extends AppCompatActivity {
 
         Canvas canvas = myPage.getCanvas();
 
-//        canvas.drawBitmap(scaledbmp, 56, 40, paint);
         int height = 50;
         canvas.translate(50,50);
+
+        if (header.getVisibility() == View.VISIBLE) {
+            StaticLayout staticLayout = new StaticLayout(header.getText(), headerPaint, pageWidth - 100,
+                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+            staticLayout.draw(canvas);
+            canvas.translate(0, staticLayout.getHeight() + 30);
+            height += staticLayout.getHeight() + 30;
+        }
+
         for (String text : randomized) {
             StaticLayout staticLayout = new StaticLayout(text, textPaint, pageWidth - 100,
                     Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
