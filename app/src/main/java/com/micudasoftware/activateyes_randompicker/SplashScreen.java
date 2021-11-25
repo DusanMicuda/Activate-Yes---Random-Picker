@@ -29,13 +29,16 @@ public class SplashScreen extends Activity {
             SharedPreferences preferences = getSharedPreferences("RandomPicker", MODE_PRIVATE);
             boolean isFirstStart = preferences.getBoolean("isFirstStart", true);
 
+            Intent intent = new Intent();
             Class<?> cls;
-            if (isFirstStart)
+            if (isFirstStart) {
                 cls = PDFActivity.class;
-            else
+                intent.putExtra("isFirstStart", true);
+                intent.putExtra("file", "LicenseAgreement.pdf");
+            }else
                 cls = MainActivity.class;
 
-            Intent intent = new Intent(this, cls);
+            intent.setClass(this, cls);
             startActivity(intent);
             finish();
         }

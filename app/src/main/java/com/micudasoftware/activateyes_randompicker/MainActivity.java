@@ -90,12 +90,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent = null;
         switch (item.getItemId()) {
             case R.id.about_us:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.activateyes.net/about"));
-                startActivity(browserIntent);
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.activateyes.net/about"));
+                break;
+            case R.id.user_manual:
+                intent = new Intent(this, PDFActivity.class);
+                intent.putExtra("file", "UserManual.pdf");
+                break;
+            case R.id.license_agreement:
+                intent = new Intent(this, PDFActivity.class);
+                intent.putExtra("file", "LicenseAgreement.pdf");
                 break;
         }
+        startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
 
