@@ -1,4 +1,4 @@
-package com.micudasoftware.activateyes_randompicker;
+package com.micudasoftware.randompicker;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.util.FitPolicy;
 
 public class PDFActivity extends AppCompatActivity {
 
@@ -34,7 +33,7 @@ public class PDFActivity extends AppCompatActivity {
                 acceptButton.setText("Continue");
             acceptButton.setVisibility(View.VISIBLE);
             acceptButton.setOnClickListener((view) -> {
-                SharedPreferences.Editor editor = getSharedPreferences("RandomPicker", MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = getSharedPreferences("com.micudasoftware.randompicker", MODE_PRIVATE).edit();
                 editor.putBoolean("isFirstStart", false);
                 editor.apply();
 

@@ -1,4 +1,4 @@
-package com.micudasoftware.activateyes_randompicker;
+package com.micudasoftware.randompicker;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,7 +26,7 @@ public class SplashScreen extends Activity {
 
     private final Runnable runnable = () -> {
         if (shouldStart) {
-            SharedPreferences preferences = getSharedPreferences("RandomPicker", MODE_PRIVATE);
+            SharedPreferences preferences = getSharedPreferences("com.micudasoftware.randompicker", MODE_PRIVATE);
             boolean isFirstStart = preferences.getBoolean("isFirstStart", true);
 
             Intent intent = new Intent();

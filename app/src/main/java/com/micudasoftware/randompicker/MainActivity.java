@@ -1,4 +1,4 @@
-package com.micudasoftware.activateyes_randompicker;
+package com.micudasoftware.randompicker;
 
 import androidx.annotation.NonNull;
         import androidx.annotation.Nullable;
@@ -20,8 +20,7 @@ import androidx.annotation.NonNull;
         import android.graphics.Canvas;
         import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-        import android.graphics.pdf.PdfDocument;
+import android.graphics.pdf.PdfDocument;
         import android.net.Uri;
         import android.os.Build;
         import android.os.Bundle;

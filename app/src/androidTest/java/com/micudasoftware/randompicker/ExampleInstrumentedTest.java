@@ -1,4 +1,4 @@
-package com.micudasoftware.activateyes_randompicker;
+package com.micudasoftware.randompicker;
 
 import android.content.Context;
 
