@@ -106,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, PDFActivity.class);
                 intent.putExtra("file", "LicenseAgreement.pdf");
                 break;
+            case R.id.version:
+                intent = new Intent(this, PDFActivity.class);
+                intent.putExtra("file", "SoftwareVersion.pdf");
+                break;
         }
         startActivity(intent);
         return super.onOptionsItemSelected(item);
@@ -338,7 +342,10 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "application/pdf");
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent intent2 = Intent.createChooser(intent, "Open File");
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent2, 0);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
                     .setSmallIcon(R.drawable.statusbar_icon)

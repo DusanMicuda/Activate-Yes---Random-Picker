@@ -71,6 +71,10 @@ public class PDFActivity extends AppCompatActivity {
                 intent = new Intent(this, PDFActivity.class);
                 intent.putExtra("file", "LicenseAgreement.pdf");
                 break;
+            case R.id.version:
+                intent = new Intent(this, PDFActivity.class);
+                intent.putExtra("file", "SoftwareVersion.pdf");
+                break;
         }
         startActivity(intent);
         return super.onOptionsItemSelected(item);
