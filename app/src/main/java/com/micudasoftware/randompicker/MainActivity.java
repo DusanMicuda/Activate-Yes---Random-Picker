@@ -17,9 +17,13 @@ import androidx.annotation.NonNull;
         import android.content.Context;
         import android.content.Intent;
         import android.content.pm.PackageManager;
-        import android.graphics.Canvas;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
         import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
         import android.net.Uri;
         import android.os.Build;
@@ -271,6 +275,9 @@ public class MainActivity extends AppCompatActivity {
                 new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create());
 
         Canvas canvas = myPage.getCanvas();
+        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
+                R.drawable.logo), null,
+                new RectF(247,770, 347, 820), null);
 
         int height = 50;
         canvas.translate(50,50);
@@ -286,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         for (String text : randomized) {
             StaticLayout staticLayout = new StaticLayout(text, textPaint, pageWidth - 100,
                     Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-            if (height + staticLayout.getHeight() + 50 < pageHeight) {
+            if (height + staticLayout.getHeight() + 100 < pageHeight) {
                 staticLayout.draw(canvas);
                 canvas.translate(0, staticLayout.getHeight() + 50);
                 height += staticLayout.getHeight() + 50;
@@ -296,6 +303,9 @@ public class MainActivity extends AppCompatActivity {
                 myPage = pdfDocument.startPage(
                         new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create());
                 canvas = myPage.getCanvas();
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),
+                        R.drawable.logo), null,
+                        new RectF(247,770, 347, 820), null);
                 canvas.translate(50,50);
                 height = 50;
 
