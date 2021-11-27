@@ -34,7 +34,8 @@ import android.graphics.pdf.PdfDocument;
         import android.text.Layout;
         import android.text.StaticLayout;
         import android.text.TextPaint;
-        import android.view.LayoutInflater;
+import android.util.Log;
+import android.view.LayoutInflater;
         import android.view.Menu;
         import android.view.MenuItem;
         import android.view.View;
@@ -321,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
         pdfDocument.finishPage(myPage);
 
-        String displayName = "ActivateYes-" + System.currentTimeMillis() + ".pdf";
+        String displayName = "RandomPicker-" + System.currentTimeMillis() + ".pdf";
 
         final ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
@@ -344,9 +345,7 @@ public class MainActivity extends AppCompatActivity {
             intent.setDataAndType(uri, "application/pdf");
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Intent intent2 = Intent.createChooser(intent, "Open File");
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent2, 0);
-
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
                     .setSmallIcon(R.drawable.statusbar_icon)
                     .setContentTitle("PDF file generated successfully")
